@@ -20,11 +20,12 @@ git clone https://github.com/tuonome/instagram-unfollow-automation.git
 
 2. Installa le dipendenze necessarie:
 pip install -r requirements.txt
-
+3. Rendi eseguibile lo script Bash:
+chmod +x instatool.sh
 ### Esecuzione del Tool
 
 4. Avvia lo script Python per eseguire l'automazione degli "unfollow":
-python unfollow.py
+./instatool.sh
 
 5. Il programma si connetterà al tuo account Instagram, recupererà l'elenco dei tuoi seguaci e chi li segue, quindi eseguirà l'"unfollow" per gli utenti non reciprocamente seguiti.
 
