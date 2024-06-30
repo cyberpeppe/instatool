@@ -78,11 +78,11 @@ def remove_followers():
         time.sleep(2)
         followers = client.user_followers(client.user_id)
         print_colored('Followers completato')
-    if totale != 0:
-        totale = set(followings.keys()) - set(followers.keys())
-    else:
-        print('nessuno trovato')
+    totale = set(followings.keys()) - set(followers.keys())
+    if totale == 0:
+        print_colored('nessuno trovato')
         exit()
+   
     print_colored(f"Totale: {len(totale)}")
     print(totale)
 
