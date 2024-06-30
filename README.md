@@ -16,7 +16,7 @@ Questo repository contiene uno strumento Python per automatizzare l'azione di "u
 
 1. Clona il repository sul tuo computer:
 
-git clone https://github.com/tuonome/instagram-unfollow-automation.git
+git clone https://github.com/cyberpeppe/instatool.git
 
 2. Installa le dipendenze necessarie:
 pip install -r requirements.txt
