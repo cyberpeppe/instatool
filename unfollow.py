@@ -7,7 +7,7 @@ def print_colored(text):
     color = "\033[92m" 
     print(f"{color}{text}\033[0m")
 
-config_path = r'\secret.txt'
+config_path = r'C:\Users\ReadyToUse\Desktop\Data\config\secret.txt'
 
 def write_credentials(file_path, username, password):
     with open(file_path, 'wb') as file:
@@ -97,10 +97,15 @@ def remove_followers():
         exit()
 
     print_colored(f"Total to unfollow: {len(to_unfollow)}")
+    unfollow_count = 0
     for user_id in to_unfollow:
+        if unfollow_count >= 250:
+            print_colored("Reached the limit of 250 unfollows.")
+            exit()
         try:
             client.user_unfollow(user_id)
-            print_colored(f"Unfollowed user id: {user_id}")
+            unfollow_count += 1
+            print_colored(f"[{unfollow_count}]: Unfollowed user id: {user_id}")
         except Exception as e:
             if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
                 print('Captcha required, try again in a few minutes')
@@ -157,11 +162,16 @@ def follow_back():
         time.sleep(2)
         followers = client.user_followers(client.user_id)
         print_colored('Followers retrieved')
-
+    following_count = 0
     for user_id in followers.keys():
+        if following_count >= 250:
+            print_colored("Reached the limit of 250 unfollows.")
+            exit()
+        
         try:
             client.user_follow(user_id)
-            print_colored(f"Followed user id: {user_id}")
+            following_count+=1
+            print_colored(f"[{following_count}]: Followed user id: {user_id}")
         except Exception as e:
             if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
                 print('Captcha required, try again in a few minutes')
