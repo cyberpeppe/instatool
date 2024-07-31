@@ -7,7 +7,7 @@ def print_colored(text):
     color = "\033[92m" 
     print(f"{color}{text}\033[0m")
 
-config_path = r'C:\Users\ReadyToUse\Desktop\Data\config\secret.txt'
+config_path = r'\secret.txt'
 
 def write_credentials(file_path, username, password):
     with open(file_path, 'wb') as file:
