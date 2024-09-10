@@ -7,7 +7,7 @@ def print_colored(text):
     color = "\033[92m" 
     print(f"{color}{text}\033[0m")
 
-config_path = r'\secret.txt'
+config_path = r'./secret.txt'
 
 def write_credentials(file_path, username, password):
     with open(file_path, 'wb') as file:
@@ -35,66 +35,9 @@ write_credentials(config_path, username, password)
 username, stored_password = read_credentials(config_path)
 
 def remove_followers():
-    try:
-        client = Client()
-        print_colored('Client configured')
-    except Exception as e:
-        if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
-            print('Captcha required, try again in a few minutes')
-            exit()
-    try:
-        if not verify_password(stored_password, password):
-            print_colored('Invalid password')
-            exit()
-        client.login(username, password)
-        print_colored('Login successful')
-    except Exception as e:
-        if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
-            print('Captcha required, try again in a few minutes')
-            exit()
-    try:
-        followings = client.user_following(client.user_id)
-        print_colored('Following retrieved')
-    except Exception as e:
-        print_colored(f"Error retrieving followings: {e}")
-        client.logout()
-        print_colored('Logging in again...')
-        client = Client()
-        try:
-            client.login(username, password)
-            print_colored('Login successful')
-        except Exception as e:
-            if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
-                print('Captcha required, try again in a few minutes')
-                exit()
-        time.sleep(2)
-        followings = client.user_following(client.user_id)
-        print_colored('Following retrieved')
-
-    try:
-        followers = client.user_followers(client.user_id)
-        print_colored('Followers retrieved')
-    except Exception as e:
-        print_colored(f"Error retrieving followers: {e}")
-        client.logout()
-        print_colored('Logging in again...')
-        client = Client()
-        try:
-            client.login(username, password)
-            print_colored('Login successful')
-        except Exception as e:
-            if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
-                print('Captcha required, try again in a few minutes')
-                exit()
-        time.sleep(2)
-        followers = client.user_followers(client.user_id)
-        print_colored('Followers retrieved')
-
-    if followings:
-        to_unfollow = set(followings.keys()) - set(followers.keys())
-    else:
-        print('No followings found')
-        exit()
+    ro = get_to_unfollow()
+    client = ro["client"]
+    to_unfollow = ro["to_unfollow"]
 
     print_colored(f"Total to unfollow: {len(to_unfollow)}")
     unfollow_count = 0
@@ -190,10 +133,90 @@ def follow_back():
             time.sleep(5)
     client.logout()
 
+def get_to_unfollow():
+    try:
+        client = Client()
+        print_colored('Client configured')
+    except Exception as e:
+        if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+            print('Captcha required, try again in a few minutes')
+            exit()
+    try:
+        if not verify_password(stored_password, password):
+            print_colored('Invalid password')
+            exit()
+        client.login(username, password)
+        print_colored('Login successful')
+    except Exception as e:
+        if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+            print('Captcha required, try again in a few minutes')
+            exit()
+    try:
+        followings = client.user_following(client.user_id)
+        print_colored('Following retrieved')
+    except Exception as e:
+        print_colored(f"Error retrieving followings: {e}")
+        client.logout()
+        print_colored('Logging in again...')
+        client = Client()
+        try:
+            client.login(username, password)
+            print_colored('Login successful')
+        except Exception as e:
+            if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+                print('Captcha required, try again in a few minutes')
+                exit()
+        time.sleep(2)
+        followings = client.user_following(client.user_id)
+        print_colored('Following retrieved')
+
+    try:
+        followers = client.user_followers(client.user_id)
+        print_colored('Followers retrieved')
+    except Exception as e:
+        print_colored(f"Error retrieving followers: {e}")
+        client.logout()
+        print_colored('Logging in again...')
+        client = Client()
+        try:
+            client.login(username, password)
+            print_colored('Login successful')
+        except Exception as e:
+            if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+                print('Captcha required, try again in a few minutes')
+                exit()
+        time.sleep(2)
+        followers = client.user_followers(client.user_id)
+        print_colored('Followers retrieved')
+
+    if followings:
+        to_unfollow = set(followings.keys()) - set(followers.keys())
+    else:
+        print('No followings found')
+        exit()
+    
+    return {"client": client, "to_unfollow": to_unfollow}
+
+def list_not_followers():
+    
+    ro = get_to_unfollow()
+    client = ro["client"]
+    to_unfollow = ro["to_unfollow"]
+
+    print_colored(f"Total to unfollow: {len(to_unfollow)}")
+    for user_id in to_unfollow:
+        uname = client.username_from_user_id(user_id)
+        with open("./to-unfollow.txt", 'a') as file:
+            file.write(uname + "\n")
+        print(uname)
+
+    client.logout()
+
+
 print("Select an operation:")
 print("1. Unfollow users who don't follow you back")
 print("2. Follow back all followers")
-print("3. Exit")
+print("3. list_not_followers")
 choice = input("Enter the number of the operation: ")
 
 if choice == '1':
@@ -201,7 +224,7 @@ if choice == '1':
 elif choice == '2':
     follow_back()
 elif choice == '3':
-    exit()
+    list_not_followers()
 else:
     print("Invalid choice. Try again.")
 
