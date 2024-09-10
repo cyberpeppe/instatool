@@ -1,4 +1,4 @@
-# Instagram Unfollow Automation Tool
+1# Instagram Unfollow Automation Tool
 
 This repository contains a Python tool to automate the "unfollow" action on Instagram using the `instagrapi` library. The main goal is to simplify the management of followed profiles, allowing users to easily remove profiles they no longer wish to follow.
 
@@ -61,4 +61,4 @@ This project is released under the MIT. See the `LICENSE.txt` file for more deta
 
 ---
 
-© 2024 Project Name. Created by cyberpeppe (https://github.com/cyberpeppe).
+© 2024 Instatool. Created by cyberpeppe (https://github.com/cyberpeppe).
