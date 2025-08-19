@@ -34,6 +34,57 @@ password = getpass.getpass("Enter password: ")
 write_credentials(config_path, username, password)
 username, stored_password = read_credentials(config_path)
 
+def removefollowersfromlist():
+    client = Client()
+    try:
+        client.login(username, password)
+    except Exception as e:
+        if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+            print('Captcha required, try again in a few minutes')
+            return
+        else:
+            print_colored(f"Login error: {e}")
+            return
+
+    # Leggi gli username da file
+    try:
+        with open("to-unfollow.txt", "r", encoding="utf-8") as f:
+            usernames = [line.strip() for line in f if line.strip()]
+    except FileNotFoundError:
+        print_colored("File to-unfollow.txt non trovato.")
+        return
+
+    print_colored(f"Total to unfollow: {len(usernames)}")
+    unfollow_count = 0
+
+    for username_to_unfollow in usernames:
+        if unfollow_count >=450:
+            print_colored("Reached the limit of 250 unfollows.")
+            break
+        try:
+            user_id = client.user_info_by_username(username_to_unfollow).pk
+            client.user_unfollow(user_id)
+            unfollow_count += 1
+            print_colored(f"[{unfollow_count}]: Unfollowed {username_to_unfollow} (id: {user_id})")
+        except Exception as e:
+            if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+                print('Captcha required, try again in a few minutes')
+                break
+            print_colored(f"Error unfollowing {username_to_unfollow}: {e}")
+            client.logout()
+            print_colored('Logging in again...')
+            client = Client()
+            try:
+                client.login(username, password)
+                print_colored('Login successful')
+            except Exception as e:
+                if isinstance(e, Exception) and 'ChallengeResolve' in str(e):
+                    print('Captcha required, try again in a few minutes')
+                    break
+            time.sleep(5)
+
+    client.logout()
+
 def remove_followers():
     ro = get_to_unfollow()
     client = ro["client"]
@@ -217,6 +268,7 @@ print("Select an operation:")
 print("1. Unfollow users who don't follow you back")
 print("2. Follow back all followers")
 print("3. list_not_followers")
+print("4. Unfollow from list")
 choice = input("Enter the number of the operation: ")
 
 if choice == '1':
@@ -225,6 +277,8 @@ elif choice == '2':
     follow_back()
 elif choice == '3':
     list_not_followers()
+elif choice == '4':
+    removefollowersfromlist()
 else:
     print("Invalid choice. Try again.")
 
