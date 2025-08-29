@@ -1,6 +1,9 @@
 1# Instagram Unfollow Automation Tool
 
 This repository contains a Python tool to automate the "unfollow" action on Instagram using the `instagrapi` library. The main goal is to simplify the management of followed profiles, allowing users to easily remove profiles they no longer wish to follow.
+ ## Docker 
+  docker build -t instatool-server .
+docker run -it --rm instatool-server
 
 ## Key Features
 
