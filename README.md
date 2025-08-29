@@ -51,6 +51,27 @@ This repository contains a Python tool to automate the "unfollow" action on Inst
 
 5. The program will connect to your Instagram account, retrieve the list of your followers and followings, then perform the "unfollow" action for users who are not following you back.
 
+### Running on Windows (cmd / PowerShell)
+
+If you are on Windows you don't need Linux: the repository includes simple wrappers to run the Python script from cmd.exe or PowerShell.
+
+- Using Command Prompt (double-click or run from cmd): run `instatool.bat`. It will prefer the `py` launcher if available, otherwise `python`.
+- Using PowerShell: run `instatool.ps1`. You can also run `powershell -ExecutionPolicy Bypass -File .\instatool.ps1` if script execution is restricted.
+
+Prerequisites on Windows:
+
+- Python 3.x installed and on PATH, or the Python launcher (`py`) installed.
+- Install dependencies once:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Notes:
+
+- `instatool.ps1` and `instatool.bat` just run `unfollow.py` from the repository root. Keep `to-unfollow.txt` and any output files in the same folder.
+- If your environment uses `python3` as the executable name, edit `instatool.bat` or call `py -3 unfollow.py`.
+
 ## Contributing
 
 If you would like to contribute to this project, feel free to fork the repository, open issues to report problems or suggest improvements, and propose changes through pull requests. Your contributions are welcome!
